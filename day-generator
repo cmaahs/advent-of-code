@@ -1,0 +1,44 @@
+#!/usr/bin/env zsh
+
+. ./mac-commands
+
+today=$(TZ=America/New_York $date_command +%d)
+current_year=$(TZ=America/New_York $date_command +%Y)
+
+day=$1
+year=$2
+
+PARENT=$(git worktree list | head -n 1 | awk '{ print $1 }')
+if [[ "${PARENT}" != "$(pwd)" ]]; then
+  echo "This needs to be run in the ROOT of the git repository"
+  echo ${PARENT}
+  false; exit
+fi
+
+if [[ -z ${day} ]]; then
+  echo "You must specify a DAY (1-25)"
+  false; exit
+fi
+
+if [[ -z ${year} ]]; then
+  year=${current_year}
+fi
+
+if [[ ! -d "./${year}/day${day}" ]]; then
+  mkdir -p "${year}/day${day}"
+fi
+
+if [[ ! -f "./${year}/day${day}/main.go" ]]; then
+  cp main.go "./${year}/day${day}/"
+fi
+
+day_no_leading_zero=$(echo ${day} | $sed_command 's/^0*//')
+
+if [[ ${day} -le ${today} || ${year} -le ${current_year} ]]
+then
+    curl -s -b "session=$(cat ~/.config/advent-of-code/session.txt)" "https://adventofcode.com/${year}/day/${day_no_leading_zero}/input" > "./${year}/day${day}/input.txt"
+    ls -1 ./${year}/day${day}/
+else
+    echo "Cannot get input! It's not time yet!"
+fi
+

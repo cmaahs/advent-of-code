@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+# Set sed command to gsed if running on mac
+# Set date command to gdate if running on mac
+if [[ `uname` = "Darwin" ]]; then
+    GSED=$(which gsed)
+    if [[ "${GSED}" == "gsed not found" ]]; then
+        echo "This script requires GNU-sed, please install with 'brew install gnu-sed'"
+        exit 1
+    fi
+    sed_command="gsed"
+    GDATE=$(which gdate)
+    if [[ "${GDATE}" == "gdate not found" ]]; then
+        echo "This script requires GNU-sed, please install with 'brew install gnu-sed'"
+        exit 1
+    fi
+    date_command="gdate"
+
+else
+    sed_command="sed"
+    date_command="date"
+fi
+
