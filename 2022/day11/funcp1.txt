@@ -1,0 +1,47 @@
+func (m MonkeyList) processMonkey(num int) {
+
+	inspections := 0
+	for x := 0; x < len(m[num].StartingItems); x++ {
+		logLine := ""
+		inspections++
+		// fmt.Printf("Item: %d=%d\n", x, m[num].StartingItems[x])
+		operationMod := m[num].OperationModifier
+		if operationMod == 0 {
+			operationMod = m[num].StartingItems[x]
+		}
+		worryLevel := uint64(0)
+		switch m[num].Operation {
+		case "*":
+			worryLevel = m[num].StartingItems[x] * operationMod
+			logLine = fmt.Sprintf("%s WL: %d * %d -> %d", logLine, m[num].StartingItems[x], operationMod, worryLevel)
+		case "+":
+			worryLevel = m[num].StartingItems[x] + operationMod
+			logLine = fmt.Sprintf("%s WL: %d * %d -> %d", logLine, m[num].StartingItems[x], operationMod, worryLevel)
+		}
+		modifiedWorryLevel := uint64(math.Round(float64(worryLevel / 3)))
+		// fmt.Printf("MWL: %d\n", modifiedWorryLevel)
+		remainder := modifiedWorryLevel % m[num].DivisibleBy
+		// fmt.Printf("\t\tR: %d", remainder)
+		logLine = fmt.Sprintf("%s R: %d", logLine, remainder)
+		if remainder == 0 {
+			// to truemonkey
+			targetMonkey := m[num].TrueMonkey
+			// fmt.Printf("Target: %d\n", targetMonkey)
+			fmt.Printf("\tTT: %d,%s, I: %d=%d\n", targetMonkey, logLine, x, worryLevel)
+			targetMonkeyNext := len(m[targetMonkey].StartingItems)
+			m[targetMonkey].StartingItems[targetMonkeyNext] = modifiedWorryLevel
+		} else {
+			// to falsemonkey
+			targetMonkey := m[num].FalseMonkey
+			// fmt.Printf("Target: %d\n", targetMonkey)
+			fmt.Printf("\tTF: %d,%s I: %d=%d\n", targetMonkey, logLine, x, worryLevel)
+			targetMonkeyNext := len(m[targetMonkey].StartingItems)
+			m[targetMonkey].StartingItems[targetMonkeyNext] = modifiedWorryLevel
+		}
+	}
+	clearList(m[num].StartingItems)
+	entry := m[num]
+	entry.Inspections += inspections
+	m[num] = entry
+}
+

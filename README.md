@@ -33,6 +33,7 @@ Where `p1` and `p2` represent part one and part two code paths respectively.
 | 8   | 1h20m       | 35m         |
 | 9   | 1h5m        | 3h30m       |
 | 10  | 55m         | 1h35m       |
+| 11  | 1h55m       | 2h30m       |
 
 ## 2015
 
