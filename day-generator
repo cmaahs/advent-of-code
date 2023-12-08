@@ -29,7 +29,7 @@ if [[ ! -d "./${year}/day${day}" ]]; then
 fi
 
 if [[ ! -f "./${year}/day${day}/main.go" ]]; then
-  cp main.go "./${year}/day${day}/"
+  ./templater/templater ${year} ${day}
 fi
 
 day_no_leading_zero=$(echo ${day} | $sed_command 's/^0*//')
